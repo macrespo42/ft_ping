@@ -14,7 +14,7 @@ int main(int argc, char **argv) {
   host_entry = gethostbyname(argv[1]);
 
   if (!host_entry) {
-    perror("gethostbyname");
+    perror("ping: unknown host");
     return 1;
   }
 
@@ -28,10 +28,11 @@ int main(int argc, char **argv) {
   addr_list = (struct in_addr **)host_entry->h_addr_list;
 
   if (addr_list[0] != NULL) {
-    // inet_ntoa convertit l'adresse binaire en chaîne de caractères
-    printf("Adresse IP: %s\n", inet_ntoa(*addr_list[0]));
+    printf("PING %s (%s): 56 data bytes\n", host_entry->h_name,
+           inet_ntoa(*addr_list[0]));
   } else {
-    printf("Aucune adresse IP trouvée pour cet hôte.\n");
+    perror("ping: unknown host");
+    return 1;
   }
 
   return 0;
